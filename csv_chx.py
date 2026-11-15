@@ -1,6 +1,7 @@
 import os 
 import platform
 import datetime
+from pathlib import Path
 
 
 
@@ -12,28 +13,29 @@ def main():
     if sys == "Linux":
         bank_dir: str = "/mnt/shared/Banking/"
     elif sys == "Windows":
+        bank_dir: str = "d:\\Banking\\"
         print("This is a Windows system.")
 
-    year: str = str(datetime.datetime.now().year)
-    print("Current Year:", year)
-    bank_dir = bank_dir + year
+    cwd:str = os.getcwd()
+    print("Current Working Directory:", cwd)
 
-    month: str = input("Enter the month: ")
-    #bank_dir = bank_dir + "/" + month
-
-    os.chdir(bank_dir)
-
+    '''year: str = str(datetime.datetime.now().year)
+        print("Current Year:", year)
+        bank_dir = bank_dir + year
+    
+        month: str = input("Enter the month: ")
+    
+        os.chdir(bank_dir)
+    
+    '''
     files:list = os.listdir()
     print("Files in Current Directory:")
     for file in files:
-        i: int = file.find(month)
+        i: int = file.find("Current")
         if i != -1:
-            bank_dir = bank_dir + "/" + file
-            os.chdir(bank_dir)
+            #bank_dir = bank_dir + "/" + file
+            #os.chdir(bank_dir)
             print(file)
-
-    cwd:str = os.getcwd() 
-    print("Current Working Directory:", cwd)
 
 
 if __name__ == "__main__":
