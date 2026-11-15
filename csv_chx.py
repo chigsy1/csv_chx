@@ -2,13 +2,30 @@ import os
 import platform
 import datetime
 from pathlib import Path
+import calendar
 
+zDebug: bool = True
 
+def get_os():
+    sys:str = platform.system()
+    if zDebug:
+        print("Operating System:", sys)
+    return sys
+
+def get_month_list(month_no:int, month_list:list = []):
+    if month_no < 10:
+        month_name:str = "0" + str(month_no) + " " + calendar.month_name[month_no]
+    else:
+        month_name = str(month_no) + " " + calendar.month_name[month_no]
+  
+    month_list.append(month_name)
+    
+    return month_list
+    
 
 def main():
     # --- Check Operating System 
-    sys:str = platform.system()
-    print("Operating System:", sys)
+    sys:str = get_os()
 
     if sys == "Linux":
         bank_dir: str = "/mnt/shared/Banking/"
@@ -19,15 +36,18 @@ def main():
     cwd:str = os.getcwd()
     print("Current Working Directory:", cwd)
 
-    '''year: str = str(datetime.datetime.now().year)
-        print("Current Year:", year)
-        bank_dir = bank_dir + year
-    
-        month: str = input("Enter the month: ")
-    
-        os.chdir(bank_dir)
-    
-    '''
+    year: str = str(datetime.datetime.now().year)
+    print("Current Year:", year)
+
+    month: str = str(datetime.datetime.now().month)
+    month_list: list = []
+    month_list = get_month_list(int(month), month_list)
+    month_list = get_month_list(int(month)-1, month_list)
+    month_list = get_month_list(int(month)-2, month_list)
+      #month_list = get_month_list(calendar.month, month_list)
+      
+    print("Current Months:", month_list)
+  
     files:list = os.listdir()
     print("Files in Current Directory:")
     for file in files:
