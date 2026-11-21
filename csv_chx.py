@@ -54,6 +54,8 @@ def get_run_env():
          bank_dir: str = "/mnt/shared/Banking" 
     elif sys_type == "Windows":
          bank_dir: str = "d:\\Banking"
+    else:
+     	bank_dir: str = "/data/data/com.termux/files/home/storage/shared/ICh/scratch"
     run_env["Bank_Dir"] = bank_dir
 
     return run_env
