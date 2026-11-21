@@ -78,11 +78,11 @@ def set_bank_dir(args:list, run_env:dict):
     if len(args) == 1:
         bank_dir: str = run_env["Bank_Dir"] + "/" + run_env["Year"] + "/" + run_env["Month"]
     elif len(args) == 2:
-        month = args[1]
+        month: str = args[1]
         bank_dir: str = run_env["Bank_Dir"] + "/" + run_env["Year"] + "/" + month
     else:
-         year = args[2]
-         month = args[1]
+         year: str = args[2]
+         month: str = args[1]
          bank_dir: str = run_env["Bank_Dir"] + "/" + year + "/" + month
     print("Banking Root Directory:", bank_dir)
 
@@ -94,8 +94,10 @@ def main():
     run_env: dict = get_run_env()
     print("Run Environment:", run_env)
 
-    args: list = get_args()
+    some_dir: str = Path('/')
+    print("Some Dir:", some_dir)
 
+    args: list = get_args()
 
     program_name:str = sys.argv[0]
     print("Program Name:", program_name)
