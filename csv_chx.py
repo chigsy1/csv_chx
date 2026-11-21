@@ -10,6 +10,8 @@ zDebug: bool = True
 def get_os():
     # --- Get Operating System
     sys_type:str = platform.system()
+    if hasattr(sys, "getandroidapilevel"):  # - Workaround pydroid thinks it's on linux.'
+    	sys_type = "Android"
     if zDebug:
         print("Operating System:", sys_type)
     return sys_type
@@ -55,7 +57,8 @@ def get_run_env():
     elif sys_type == "Windows":
          bank_dir: str = "d:\\Banking"
     else:
-     	bank_dir: str = "/data/data/com.termux/files/home/storage/shared/ICh/scratch"
+     	bank_dir: str = "/storage/emulated/0/ICh/scratch"
+     	#bank_dir: str = "/data/data/com.termux/files/home/storage/shared/ICh/scratch"
     run_env["Bank_Dir"] = bank_dir
 
     return run_env
