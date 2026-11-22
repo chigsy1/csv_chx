@@ -57,9 +57,13 @@ def get_run_env():
     elif sys_type == "Windows":
          bank_dir: str = "d:\\Banking"
     else:
-     	bank_dir: str = "/storage/emulated/0/ICh/scratch"
-     	#bank_dir: str = "/data/data/com.termux/files/home/storage/shared/ICh/scratch"
+     	 bank_dir: str = "/storage/emulated/0/ICh/scratch"
+     	 #bank_dir: str = "/data/data/com.termux/files/home/storage/shared/ICh/scratch"
+        
     run_env["Bank_Dir"] = bank_dir
+
+    cwd:str = os.getcwd()
+    run_env["CWD"] = cwd
 
     return run_env
 
@@ -80,15 +84,21 @@ def set_bank_dir(args:list, run_env:dict):
     # -----------------------------------------------------------------------------------------------------------------------------
     print("Setting Banking Root Directory...")
     print("len of Args:", len(args))
+
+    if run_env["OS"] == "Windows":
+        slash: str = "\\"
+    else:
+        slash: str = "/"
+
     if len(args) == 1:
-        bank_dir: str = run_env["Bank_Dir"] + "/" + run_env["Year"] + "/" + run_env["Month"]
+        bank_dir: str = run_env["Bank_Dir"] + slash + run_env["Year"] + slash + run_env["Month"]
     elif len(args) == 2:
         month: str = args[1]
-        bank_dir: str = run_env["Bank_Dir"] + "/" + run_env["Year"] + "/" + month
+        bank_dir: str = run_env["Bank_Dir"] + slash + run_env["Year"] + slash + month
     else:
          year: str = args[2]
          month: str = args[1]
-         bank_dir: str = run_env["Bank_Dir"] + "/" + year + "/" + month
+         bank_dir: str = run_env["Bank_Dir"] + slash + year + slash + month
     print("Banking Root Directory:", bank_dir)
 
     return bank_dir
@@ -116,9 +126,9 @@ def main():
     files:list = os.listdir()
     print("Files in Current Directory:")
     for file in files:
-        i: int = file.find("Current")
+        i: int = file.find(".csv")
         if i != -1:
-            #bank_dir = bank_dir + "/" + file
+            #bank_dir = bank_dir + slash + file
             #os.chdir(bank_dir)
             print(file)
 
