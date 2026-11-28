@@ -57,13 +57,9 @@ def get_run_env():
     elif sys_type == "Windows":
          bank_dir: str = "d:\\Banking"
     else:
-     	 bank_dir: str = "/storage/emulated/0/ICh/scratch"
-     	 #bank_dir: str = "/data/data/com.termux/files/home/storage/shared/ICh/scratch"
-        
+     	bank_dir: str = "/storage/emulated/0/ICh/scratch"
+     	#bank_dir: str = "/data/data/com.termux/files/home/storage/shared/ICh/scratch"
     run_env["Bank_Dir"] = bank_dir
-
-    cwd:str = os.getcwd()
-    run_env["CWD"] = cwd
 
     return run_env
 
@@ -78,30 +74,33 @@ def get_args():
     return args
 
 
-def set_bank_dir(args:list, run_env:dict):
+def set_bank_dir(args: list, run_env: dict):
     # -----------------------------------------------------------------------------------------------------------------------------
     # --- Set Banking Root Directory
     # -----------------------------------------------------------------------------------------------------------------------------
     print("Setting Banking Root Directory...")
-    print("len of Args:", len(args))
-
-    if run_env["OS"] == "Windows":
-        slash: str = "\\"
-    else:
-        slash: str = "/"
-
+     
     if len(args) == 1:
-        bank_dir: str = run_env["Bank_Dir"] + slash + run_env["Year"] + slash + run_env["Month"]
+        bank_dir: str = run_env["Bank_Dir"] + "/" + run_env["Year"] + "/" + run_env["Month"]
     elif len(args) == 2:
         month: str = args[1]
-        bank_dir: str = run_env["Bank_Dir"] + slash + run_env["Year"] + slash + month
+        bank_dir: str = run_env["Bank_Dir"] + "/" + run_env["Year"] + "/" + month
     else:
          year: str = args[2]
          month: str = args[1]
-         bank_dir: str = run_env["Bank_Dir"] + slash + year + slash + month
+         bank_dir: str = run_env["Bank_Dir"] + "/" + year + "/" + month
     print("Banking Root Directory:", bank_dir)
 
     return bank_dir
+    
+    
+def process_args(args: list):
+	print("len of Args:", len(args))
+	for arg in args:
+		print("----- Arg ", arg)
+		match arg:
+			case 'A':
+				print ("Year")
 
 
 def main():
@@ -117,6 +116,7 @@ def main():
     program_name:str = sys.argv[0]
     print("Program Name:", program_name)
     print("Args = ", sys.argv)
+    process_args(sys.argv)
  
     bank_dir: str = set_bank_dir(args, run_env)
     os.chdir(bank_dir)
@@ -126,9 +126,9 @@ def main():
     files:list = os.listdir()
     print("Files in Current Directory:")
     for file in files:
-        i: int = file.find(".csv")
+        i: int = file.find("Current")
         if i != -1:
-            #bank_dir = bank_dir + slash + file
+            #bank_dir = bank_dir + "/" + file
             #os.chdir(bank_dir)
             print(file)
 
