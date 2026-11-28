@@ -6,28 +6,31 @@ import calendar
 import sys
 
 zDebug: bool = True
+slash: str = os.sep
 
 def get_os():
     # --- Get Operating System
     sys_type:str = platform.system()
     if hasattr(sys, "getandroidapilevel"):  # - Workaround pydroid thinks it's on linux.'
-    	sys_type = "Android"
+        sys_type = "Android"
     if zDebug:
         print("Operating System:", sys_type)
     return sys_type
 
 
-def get_month_list(month_no:int, month_list:list = []):
-    if month_no < 10:
-        month_name:str = "0" + str(month_no) + " " + calendar.month_name[month_no]
-    else:
-        month_name = str(month_no) + " " + calendar.month_name[month_no]
+def get_month_list(month_list:list = []) -> list: 
+    for month_no in range(1, 13):
+        if month_no < 10:
+            month_name:str = "0" + str(month_no) + " " + calendar.month_name[month_no]
+        else:
+            month_name = str(month_no) + " " + calendar.month_name[month_no]
   
-    month_list.append(month_name)
+        month_list.append(month_name)
+
     return month_list
 
 
-def get_run_env():
+def get_run_env() -> dict:
     # -----------------------------------------------------------------------------------------------------------------------------
     # --- Get Run Environment
     # -----------------------------------------------------------------------------------------------------------------------------
@@ -57,14 +60,14 @@ def get_run_env():
     elif sys_type == "Windows":
          bank_dir: str = "d:\\Banking"
     else:
-     	bank_dir: str = "/storage/emulated/0/ICh/scratch"
-     	#bank_dir: str = "/data/data/com.termux/files/home/storage/shared/ICh/scratch"
+         bank_dir: str = "/storage/emulated/0/ICh/scratch"
+         #bank_dir: str = "/data/data/com.termux/files/home/storage/shared/ICh/scratch"
     run_env["Bank_Dir"] = bank_dir
 
     return run_env
 
 
-def get_args():
+def get_args() -> list:
     # -----------------------------------------------------------------------------------------------------------------------------
     # --- Get Command Line Arguments
     # -----------------------------------------------------------------------------------------------------------------------------
@@ -74,51 +77,63 @@ def get_args():
     return args
 
 
-def set_bank_dir(args: list, run_env: dict):
+def set_option_defaults(run_env: dict) -> dict:
+    # -----------------------------------------------------------------------------------------------------------------------------
+    # --- Set Option Defaults
+    # -----------------------------------------------------------------------------------------------------------------------------
+    option_defaults: dict = {"Bank_Dir": run_env["Bank_Dir"], "Year": run_env["Year"], "Month": run_env["Month"]}
+    return option_defaults
+
+
+def set_bank_dir(options: dict):
     # -----------------------------------------------------------------------------------------------------------------------------
     # --- Set Banking Root Directory
     # -----------------------------------------------------------------------------------------------------------------------------
     print("Setting Banking Root Directory...")
-     
-    if len(args) == 1:
-        bank_dir: str = run_env["Bank_Dir"] + "/" + run_env["Year"] + "/" + run_env["Month"]
-    elif len(args) == 2:
-        month: str = args[1]
-        bank_dir: str = run_env["Bank_Dir"] + "/" + run_env["Year"] + "/" + month
-    else:
-         year: str = args[2]
-         month: str = args[1]
-         bank_dir: str = run_env["Bank_Dir"] + "/" + year + "/" + month
-    print("Banking Root Directory:", bank_dir)
+
+    bank_dir: str = options["Bank_Dir"] + slash + options["Year"] + slash + options["Month"]
+         
+    print("Accounts Directory:", bank_dir)
 
     return bank_dir
     
     
-def process_args(args: list):
-	print("len of Args:", len(args))
-	for arg in args:
-		print("----- Arg ", arg)
-		match arg:
-			case 'A':
-				print ("Year")
-
+def process_args(args: list, options: dict):
+    iArg: int = 0
+    print("len of Args:", len(args))
+    for arg in args:
+        print("----- Arg ", arg)
+        match arg:
+            case '-y':
+                print("Arg ", iArg, "Set Year")
+                options["Year"] = args[iArg + 1]
+            case '-m':
+                print("Arg ", iArg, "Set Month")
+                month_part: str = args[iArg + 1]
+        iArg += 1 
+    
 
 def main():
 
+    program_name:str = sys.argv[0]
+    print("Program Name:", program_name)
+
     run_env: dict = get_run_env()
     print("Run Environment:", run_env)
+
+    month_list: list = get_month_list()
+    print("Month List:", month_list)
 
     some_dir: str = Path('/')
     print("Some Dir:", some_dir)
 
     args: list = get_args()
+    options: dict = set_option_defaults(run_env)
 
-    program_name:str = sys.argv[0]
-    print("Program Name:", program_name)
     print("Args = ", sys.argv)
-    process_args(sys.argv)
+    process_args(sys.argv, options)
  
-    bank_dir: str = set_bank_dir(args, run_env)
+    bank_dir: str = set_bank_dir(options)
     os.chdir(bank_dir)
     cwd:str = os.getcwd()
     print("Current Working Directory:", cwd)
