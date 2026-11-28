@@ -20,10 +20,11 @@ def get_os():
 
 def get_month_list(month_list:list = []) -> list: 
     for month_no in range(1, 13):
+        month_str: str = calendar.month_name[month_no]
         if month_no < 10:
-            month_name:str = "0" + str(month_no) + " " + calendar.month_name[month_no]
+            month_name:str = "0" + str(month_no) + " " + month_str
         else:
-            month_name = str(month_no) + " " + calendar.month_name[month_no]
+            month_name = str(month_no) + " " + month_str
   
         month_list.append(month_name)
 
@@ -110,8 +111,30 @@ def process_args(args: list, options: dict):
             case '-m':
                 print("Arg ", iArg, "Set Month")
                 month_part: str = args[iArg + 1]
+                month_found: str = check_month(month_part)
+                if month_found != "":
+                    options["Month"] = month_found
+                    print("Month set to:", month_found)
+                else:
+                    print("Error:", month_part, "does not uniquely identify a month.")
+                    sys.exit(1)
         iArg += 1 
-    
+
+def check_month(user_month: str) -> str:
+    # -----------------------------------------------------------------------------------------------------------------------------
+    # --- Check user-supplied month is part of a month string in the month list.  
+    #     Return True if a single match is found, otherwise return False.
+    # -----------------------------------------------------------------------------------------------------------------------------
+    month_list: list = get_month_list()
+    Nmatch: int = 0
+
+    for month in month_list:
+        month_lc: str = month.lower()
+        if month_lc.find(user_month.lower()) != -1:
+            Nmatch += 1
+            month_found = month
+ 
+    return month_found if Nmatch == 1 else ""
 
 def main():
 
@@ -120,9 +143,6 @@ def main():
 
     run_env: dict = get_run_env()
     print("Run Environment:", run_env)
-
-    month_list: list = get_month_list()
-    print("Month List:", month_list)
 
     some_dir: str = Path('/')
     print("Some Dir:", some_dir)
